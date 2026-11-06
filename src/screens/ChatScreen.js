@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 
+import Mensagem from "../components/Mensagem";
+
 const mensagens = [
   { id: 1, texto: "Olá, tudo bem?", recebida: true },
   { id: 2, texto: "Tudo ótimo, e vc?", recebida: false },
@@ -35,14 +37,7 @@ export default function ChatScreen({ route }) {
           keyExtractor={(item) => item.id.toString()}
           style={styles.listaMensagens}
           renderItem={({ item }) => (
-            <View
-              style={[
-                styles.mensagem,
-                item.recebida ? styles.recebida : styles.enviada,
-              ]}
-            >
-              <Text>{item.texto}</Text>
-            </View>
+            <Mensagem mensagem={item.texto} recebida={item.recebida} />
           )}
         />
 
@@ -73,20 +68,6 @@ const styles = StyleSheet.create({
   },
   listaMensagens: {
     flex: 1,
-  },
-  mensagem: {
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 10,
-    maxWidth: "80%",
-  },
-  recebida: {
-    alignSelf: "flex-start",
-    backgroundColor: "#fff",
-  },
-  enviada: {
-    alignSelf: "flex-end",
-    backgroundColor: "#bfe7e1",
   },
   areaEnvio: {
     flexDirection: "row",
