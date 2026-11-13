@@ -7,21 +7,30 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
-
 import Mensagem from "../components/Mensagem";
-
-const mensagens = [
-  { id: 1, texto: "Olá, tudo bem?", recebida: true },
-  { id: 2, texto: "Tudo ótimo, e vc?", recebida: false },
-  { id: 3, texto: "No jeito", recebida: true },
-];
+import { useState } from "react";
+import MensagemService from "../services/MensagemService";
 
 export default function ChatScreen({ route }) {
-  const { nome } = route.params;
+  const { contatoId, nome } = route.params;
   const headerHeight = useHeaderHeight();
+
+  const [mensagens, setMensagens] = useState(() =>
+    MensagemService.getMensagens(contatoId),
+  );
+
+  const [texto, setTexto] = useState("");
+
+  function enviarMensagem() {
+    const novaMensagem = MensagemService.enviarMensagem(contatoId, texto);
+
+    if (!novaMensagem) return;
+
+    setMensagens((anteriores) => [...anteriores, novaMensagem]);
+    setTexto("");
+  }
 
   return (
     <KeyboardAvoidingView
@@ -45,8 +54,10 @@ export default function ChatScreen({ route }) {
           <TextInput
             style={styles.input}
             placeholder="Digite uma mensagem..."
+            value={texto}
+            onChangeText={setTexto}
           />
-          <TouchableOpacity style={styles.botao}>
+          <TouchableOpacity style={styles.botao} onPress={enviarMensagem}>
             <Text style={styles.textoBotao}>Enviar</Text>
           </TouchableOpacity>
         </View>
